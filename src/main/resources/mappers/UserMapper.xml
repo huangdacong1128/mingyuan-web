@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+ <mapper namespace="com.mingyuan.dao.UserMapper">
+ 	   <!-- public Integer addUser(User user); -->
+ 		<insert id="addUser">
+ 			insert into user <include refid="useItem"/> value(#{userName},#{lastName},#{password},#{phone},#{address},#{createTime},#{isDelete},#{email})
+ 		</insert>
+ 		<sql id="useItem">
+ 			(user_name,last_name,password, phone,address,createTime,is_delete,email)
+ 		</sql>
+ 		
+ 		<!-- public User findUserByName(String name); -->
+ 		<select id="findUserByName" resultType="com.mingyuan.entitys.User">
+ 			select 
+ 				user_id as userId,last_name as lastName,
+ 				user_name as userName,password,
+ 				phone,address,
+ 				createTime,is_delete as isDelete
+ 			from user 
+ 			where 
+ 				user_name=#{name} and is_delete=0
+ 		</select>
+ 		
+ 		<!--public List<User> getUserbyTerm(String term);  -->
+ 		<select id="getUserbyTerm" resultType="com.mingyuan.entitys.User">
+ 			select 
+ 				user_id as userId,last_name as lastName,
+ 				user_name as userName,password,
+ 				phone,address,
+ 				createTime,is_delete as isDelete
+ 			from user 
+ 			where 
+ 			<!-- <if test="name != null">
+ 				user_name like #{name} and 
+ 			</if>	 -->
+ 				is_delete=0 
+ 		</select>
+ 		
+ 		
+ 		<!--public List<Role> getUserRoles(Integer userId)  -->
+ 		<select id="getUserRoles" resultType="com.mingyuan.entitys.Role">
+ 			select 
+ 				r.role_name,r.role_id   
+ 			from roles r 
+ 			where role_id in (
+ 				select 
+ 					role_id 
+ 			  from 
+ 			  	user_role 
+ 			  where  
+ 			  	user_id =#{userId} 
+ 			  group by 
+ 			  	role_id
+ 			  	)	
+ 		</select>
+ 		
+ 		<!-- public List<Role> getOutUserRoles(Integer userId); -->
+ 		<select id="getOutUserRoles" resultType="com.mingyuan.entitys.Role">
+ 			select 
+ 				r.role_name,r.role_id   
+ 			from roles r 
+ 			where role_id not in (
+ 				select 
+ 					role_id 
+ 				from 
+ 			  	user_role 
+ 			  where  
+ 			  	user_id =#{userId} 
+ 			  group by 
+ 			  	role_id
+ 			  	)			
+ 		</select>
+ 		
+ 		
+		<!--  给用户添加一个角色-->
+		<!-- 
+			public Integer addUerRole(@Param("roleId")Integer[] roleId,
+																@Param("userId")Integer userId,
+																@Param("createTime") Date time);
+		-->
+ 		<insert id="addUerRole" >
+ 			insert into user_role(
+ 				user_id,role_id,create_time
+ 			) values
+ 			<foreach collection=""></foreach>
+ 			(
+ 				#{userId},#{roleId},#{createTime}
+ 			)				
+ 		</insert>
+ 		
+ 		<!-- 
+ 			/**
+		 * 删除用户的一个角色
+		 * @param roleId 角色的id
+		 * @param userId用户的id
+		 * @return
+		 */
+ 		 -->
+ 		 
+ 		 <!--  public Integer deleteUserRole(@Param("roleId")Integer roleId,
+																		@Param("userId")Integer userId);-->
+																		
+			<delete id="deleteUserRole">		
+				delete from 
+					user_role 
+				where 
+					user_id=#{userId} and role_id=#{roleId}
+			</delete>															
+ </mapper>
