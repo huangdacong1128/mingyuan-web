@@ -25,4 +25,10 @@ public class SystemHander {
 	public String showAddRole() {
 		return "addRole";
 	}
+	
+	@RequestMapping("addPermission")
+	@RequiresAuthentication
+	public String showAddPermission() {
+		return "addpermission";
+	}
 }

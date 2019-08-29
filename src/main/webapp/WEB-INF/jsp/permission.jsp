@@ -46,7 +46,7 @@
 								<br>
 								<hr style="clear: both;">
 								<div class="table-responsive">
-										<table class="table  table-bordered" id="role_list">
+										<table class="table  table-bordered" id="permission_list">
 												<thead>
 														<tr>
 																<th width="30">#</th>
@@ -89,7 +89,7 @@
 		});
 		function to_page(pageNo,name) {
 			$.ajax({
-				url : "${APP_PATH}/role/listRole",
+				url : "${APP_PATH}/pm/show_all_p",
 				dataType : "json",
 				type : "GET",
 				success : function(result) {
@@ -99,37 +99,28 @@
 		}
 		function build_role_table(result) {
 			// 清空table表格
-			$("#role_list>tbody").empty();
-			var users = result.extend.PageInfo.list;
-			$.each(users,function(index, item) {
+			$("#permission_list>tbody").empty();
+			var permissions = result.extend.permission;
+			$.each(permissions,function(index, item) {
 								var checkTd = $("<td><input type='checkbox' name='checks'></td>")
-								var roleIdTd = $("<td></td>").append(item.roleId);
-								var roleNameTd = $("<td></td>").append(item.roleName);
+								var pIdTd = $("<td></td>").append(item.pId);
+								var pNameTd = $("<td></td>").append(item.pname);
 								var bntTd = $("<td></td>").append();
 								bntTd.append("<button type='button'  class='btn btn-success btn-xs'> <i class=' glyphicon glyphicon-check'> </i> </button>&nbsp");
 								bntTd.append("<button type='button'  class='btn btn-primary btn-xs'> <i class=' glyphicon glyphicon-pencil'> </i> </button>&nbsp");
 								bntTd.append("<button type='button'  class='btn btn-danger btn-xs'> <i class=' glyphicon glyphicon-remove'> </i> </button>");
-								$("<tr></tr>").append(roleIdTd)
+								$("<tr></tr>").append(pIdTd)
 															 .append(checkTd)
-															 .append(roleNameTd)
+															 .append(pNameTd)
 															 .append(bntTd)
-															 .appendTo("#role_list>tbody");
+															 .appendTo("#permission_list>tbody");
 							});
-			
-			assignPermission();
 			//注册编辑按钮
 			//editUser();
 			//assignRole();
 			//注册删除按钮
 		/* 	table_deleteClick(); */
 		}		
-		
-		function assignPermission(){
-			$("tbody .btn-success").click(function(){
-				var roleId= $(this).parent().siblings().html();
-		    window.location.href = "${APP_PATH}/role/assignPermission?roleId="+roleId;
-		       });
-		}
 		</script>
 </body>
 </html>

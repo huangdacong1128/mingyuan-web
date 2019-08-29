@@ -3,6 +3,7 @@ package com.mingyuan.service;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,11 +64,13 @@ public class UserService {
 		
 		return userMapper.getOutUserRoles(userId);
 	}
-
+	
+	
+	@RequiresPermissions("add_student")
 	public void addUserRole(Integer[] roleIds, Integer userId) {
-		
+		System.err.println("addUserRole==============================");
 		Integer num=userMapper.addUerRole(roleIds,userId,new Date());
-		if(num!=1) {
+		if(num<1) {
 			throw new InsertException("角色添加异常请联系管理员");
 		}
 	}
@@ -81,10 +84,10 @@ public class UserService {
 	 * @param userId用户id
 	 */
 
-	public void deleteUserRole(Integer roleId, Integer userId) {
-		Integer num=userMapper.deleteUserRole(roleId,userId);
-		if(num!=1) {
-			throw new DeleteException("角色添加异常请联系管理员");
+	public void deleteUserRole(Integer[] roleIds, Integer userId) {
+		Integer num=userMapper.deleteUserRole(roleIds,userId);
+		if(num<1) {
+			throw new DeleteException("删除角色异常请联系管理员");
 		}
 	}
 	

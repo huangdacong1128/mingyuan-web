@@ -41,7 +41,7 @@
  		<!--public List<Role> getUserRoles(Integer userId)  -->
  		<select id="getUserRoles" resultType="com.mingyuan.entitys.Role">
  			select 
- 				r.role_name,r.role_id   
+ 				r.role_name,r.role_id,r.role   
  			from roles r 
  			where role_id in (
  				select 
@@ -58,7 +58,7 @@
  		<!-- public List<Role> getOutUserRoles(Integer userId); -->
  		<select id="getOutUserRoles" resultType="com.mingyuan.entitys.Role">
  			select 
- 				r.role_name,r.role_id   
+ 				r.role_name,r.role_id,r.role 
  			from roles r 
  			where role_id not in (
  				select 
@@ -73,7 +73,7 @@
  		</select>
  		
  		
-		<!--  给用户添加一个角色-->
+		<!--  给用户添加角色-->
 		<!-- 
 			public Integer addUerRole(@Param("roleId")Integer[] roleId,
 																@Param("userId")Integer userId,
@@ -83,12 +83,11 @@
  			insert into user_role(
  				user_id,role_id,create_time
  			) values
- 			<foreach collection=""></foreach>
- 			(
- 				#{userId},#{roleId},#{createTime}
- 			)				
- 		</insert>
- 		
+ 			 <foreach item="roleId" index="index" collection="roleIds"
+       separator=",">
+        (#{userId},#{roleId},#{createTime})
+  		</foreach>
+ 		</insert>		
  		<!-- 
  			/**
 		 * 删除用户的一个角色
@@ -98,13 +97,16 @@
 		 */
  		 -->
  		 
- 		 <!--  public Integer deleteUserRole(@Param("roleId")Integer roleId,
+ 		 <!--  public Integer deleteUserRole(@Param("roleIds")Integer[] roleIds,
 																		@Param("userId")Integer userId);-->
 																		
 			<delete id="deleteUserRole">		
 				delete from 
 					user_role 
-				where 
-					user_id=#{userId} and role_id=#{roleId}
+				where role_id in 
+				<foreach item="roleId" index="index" collection="roleIds" open="(" separator="," close=")">
+        #{roleId}
+  			</foreach>
+				and	user_id=#{userId}
 			</delete>															
  </mapper>

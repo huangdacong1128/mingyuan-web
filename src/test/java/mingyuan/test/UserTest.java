@@ -3,7 +3,6 @@ package mingyuan.test;
 import java.util.List;
 
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.mingyuan.entitys.Role;

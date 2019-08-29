@@ -7,8 +7,17 @@ public class Role implements Serializable {
 
 	private static final long serialVersionUID = -436558232918762658L;
 	private Integer roleId;
+	private String role;
 	private String roleName;
 	private Date createTime;
+	
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
+	}
 
 	public Integer getRoleId() {
 		return roleId;
@@ -61,7 +70,10 @@ public class Role implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Role [roleId=" + roleId + ", roleName=" + roleName + ", createTime=" + createTime + "]";
+		return "Role [roleId=" + roleId + ", role=" + role + ", roleName=" + roleName + ", createTime=" + createTime
+				+ "]";
 	}
+
+	
 
 }

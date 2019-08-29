@@ -22,16 +22,16 @@
 			<div class="panel panel-default">
               <div class="panel-heading">表单数据<div style="float:right;cursor:pointer;" data-toggle="modal" data-target="#myModal"><i class="glyphicon glyphicon-question-sign"></i></div></div>
 			  <div class="panel-body">
-				<form role="form" action="${APP_PATH}/role/addrole" method="post" id="addrole">
+				<form role="form" action="${APP_PATH}/pm/add_permission" method="post" id="add_permission_form">
 				  <div class="form-group">
-					<label for="addForm_userName">角色的名称</label>
-					<input type="text" class="form-control"  name="role" placeholder="请输入角色的名称">
-				  	<p class="help-block label label-warning">角色的名称为2-15位字符, 格式为： zhangsan123</p><a></a>	
+					<label >权限的名称</label>
+					<input type="text" class="form-control"  name="permission" placeholder="请输入权限的名称">
+				  	<p class="help-block label label-warning">权限的名称为2-15位英文字符和下划线, 格式为：add_student </p><a></a>	
 				  </div>	
 				  <div class="form-group">
-					<label for="addForm_userName">角色的名称</label>
-					<input type="text" class="form-control"  name="roleName" placeholder="请输入角色的描述">
-				  	<p class="help-block label label-warning">角色的名称为2-15位字符, 格式为： zhangsan123</p><a></a>	
+					<label >权限的描述</label>
+					<input type="text" class="form-control"  name="power_name" placeholder="请输入权限的描述">
+				  	<p class="help-block label label-warning">权限的描述为2-15位字符, 格式为： 添加课程</p><a></a>	
 				  	</div>		  
 				  <button type="button" class="btn btn-success" id="addForm_submit"><i class="glyphicon glyphicon-plus"></i> 新增</button>
 				  <button type="button" class="btn btn-danger" id="addForm_reset"><i class="glyphicon glyphicon-refresh"></i> 重置</button>
@@ -44,7 +44,7 @@
 		<script src="${APP_PATH}/script/docs.min.js"></script>
 		<script type="text/javascript">	
 		$("#addForm_submit").click(function(){
-			$("#addrole").submit();
+			$("#add_permission_form").submit();
 		});
 		</script>
 </body>

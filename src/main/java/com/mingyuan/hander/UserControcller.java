@@ -1,6 +1,5 @@
 package com.mingyuan.hander;
 
-import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -9,6 +8,8 @@ import javax.validation.Valid;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.authz.UnauthorizedException;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,6 +24,7 @@ import com.mingyuan.bean.Msg;
 import com.mingyuan.entitys.Role;
 import com.mingyuan.entitys.User;
 import com.mingyuan.service.UserService;
+import com.mingyuan.service.ex.NoPermissionException;
 
 
 
@@ -103,7 +105,9 @@ public class UserControcller extends BaseHandler {
 	}
 	
 	@RequestMapping("/assignRole")
+	@RequiresPermissions("add_student")
 	public String showRoles(HttpServletRequest request) {
+		System.err.println("showRoles------------------------------>");
 		String userId=request.getParameter("userId");
 		request.setAttribute("userId", userId);
 		return "assignRole";
@@ -126,6 +130,8 @@ public class UserControcller extends BaseHandler {
 		return "addUser";
 	}
 	
+	
+	
 	@RequestMapping("/showUserRole")
 	@ResponseBody
 	public Msg showUserRole(Integer userId) {
@@ -134,6 +140,8 @@ public class UserControcller extends BaseHandler {
 		return Msg.success().addMap("userRoles", userRoles)
 												  .addMap("outUseRoles", outUseRoles);
 	}
+		
+	
 	/**
 	 * 给用户添加角色
 	 * @param roleId角色id
@@ -141,13 +149,14 @@ public class UserControcller extends BaseHandler {
 	 * @return 返回执行信息
 	 */
 	@RequestMapping("/addUserRole")
-	@ResponseBody
+	@ResponseBody	
 	public Msg addUserRole(Integer[] roleIds,Integer userId) {	
-		System.err.println("roleIds======="+roleIds.length);
-		for (Integer roleId : roleIds) {
-			System.err.println("roleId==============="+roleId);
+		try {
 			userService.addUserRole(roleIds,userId);
-		}				
+		} catch (UnauthorizedException e) {
+			throw new NoPermissionException("没有添加角色权限");
+		}
+		
 		return Msg.success();		
 	}
 	
@@ -156,7 +165,7 @@ public class UserControcller extends BaseHandler {
 	 */
 	@RequestMapping("/deleteUserRole")
 	@ResponseBody
-	public Msg deleteUserRole(Integer roleIds,Integer userId) {	
+	public Msg deleteUserRole(Integer[] roleIds,Integer userId) {	
 		
 		userService.deleteUserRole(roleIds,userId);		
 		return Msg.success();		

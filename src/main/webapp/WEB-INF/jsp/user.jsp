@@ -135,7 +135,7 @@ table tbody td:nth-child(even) {
 						build_student_table(result);
 						build_page_info(result);
 					}
-				})			
+				});		
 			}
 			//显示学生表格内容
 			function build_student_table(result) {

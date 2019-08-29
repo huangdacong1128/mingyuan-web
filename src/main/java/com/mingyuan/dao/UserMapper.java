@@ -3,7 +3,6 @@ package com.mingyuan.dao;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
@@ -27,7 +26,7 @@ public interface UserMapper {
 
 		public List<Role> getOutUserRoles(Integer userId);
 		/**
-		 * 给用户添加一个角色
+		 * 给用户添加角色
 		 * @param roleIds 角色的id
 		 * @param userId用户的id
 		 * @return
@@ -42,6 +41,6 @@ public interface UserMapper {
 		 * @param userId用户的id
 		 * @return
 		 */
-		public Integer deleteUserRole(@Param("roleId")Integer roleId,
+		public Integer deleteUserRole(@Param("roleIds")Integer[] roleIds,
 																		@Param("userId")Integer userId);
 }

@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+    <%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <!DOCTYPE html>
 <html lang="UTF-8">
   <head>
@@ -67,20 +68,24 @@
 					<li class="list-group-item tree-closed" >
 						<a href="main.html"><i class="glyphicon glyphicon-dashboard"></i> 控制面板</a> 
 					</li>
+					<shiro:hasAnyRoles name="sys_admin,headmaster">
 					<li class="list-group-item tree-closed">
 						<span><i class="glyphicon glyphicon glyphicon-tasks"></i> 权限管理 <span class="badge" style="float:right">3</span></span> 
 						<ul style="margin-top:10px;display:none;">
 							<li style="height:30px;">
 								<a href="${APP_PATH}/user/showUser" target="as"><i class="glyphicon glyphicon-user"></i> 用户维护</a> 
 							</li>
+							<shiro:hasPermission name="sys_admin ">
 							<li style="height:30px;">
 								<a href="${APP_PATH}/user/showRole" target="as"><i class="glyphicon glyphicon-king"></i> 角色维护</a> 
 							</li>
 							<li style="height:30px;">
-								<a href="permission.html"><i class="glyphicon glyphicon-lock"></i> 许可维护</a> 
+								<a href="${APP_PATH}/pm/show_permission" target="as"><i class="glyphicon glyphicon-lock"></i> 许可维护</a> 
 							</li>
+							</shiro:hasPermission>
 						</ul>
 					</li>
+					</shiro:hasAnyRoles>
 					<li class="list-group-item tree-closed">
 						<span><i class="glyphicon glyphicon-ok"></i> 业务审核 <span class="badge" style="float:right">3</span></span> 
 						<ul style="margin-top:10px;display:none;">

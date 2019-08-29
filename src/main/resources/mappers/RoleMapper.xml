@@ -7,10 +7,95 @@
  	
  	<insert id="insertOneRole" useGeneratedKeys="true" keyProperty="roleId">
  		insert into roles(
- 			role_name,create_time
+ 			role_name,create_time,role
  		) 
  		value(
- 			#{roleName},#{createTime}
+ 			#{roleName},#{createTime},#{role}
  		)
  	</insert>
+ 	
+ 	<!--/**
+	 * 给角色添加权限
+	 * @param roleId 角色id
+	 * @param pId 权限id数组
+	 * @return 受影响的行数
+	 */
+	Integer addRolePermission(Integer roleId,Integer[] pIds);  -->
+	
+	<insert id="addRolePermission">		
+		insert into role_power(
+ 				role_id,power_id,create_time
+ 			) values
+ 			 <foreach item="pId" index="index" collection="pIds"
+       separator=",">
+        (#{roleId},#{pId},#{createTime})
+  		</foreach>
+	</insert>
+	
+	<!--  
+	/**
+	 * 删除角色的权限
+	 * @param roleId
+	 * @param pIds
+	 * @return受影响的行数
+	 */
+	Integer deleteRolePermisson(Integer roleId,Integer[] pIds);	
+	-->
+	
+	<delete id="deleteRolePermisson">
+		delete from role_power
+		where power_id in 
+		<foreach collection="pIds" item="pId" separator="," open="(" close=")">
+			#{pId}
+		</foreach>
+		and role_id=#{roleId}
+	</delete>
+	
+	<!-- /**
+	 * 查询该角色的权限
+	 * @param roleId 角色id
+	 * @return 权限的集合
+	 */
+	List<Permission> getRolePermission(Integer roleId); -->
+	
+	<select id="getRolePermission" resultType="com.mingyuan.entitys.Permission">
+		select 
+			p.power_id as pId,p.power_name pName,p.permission
+	  from 
+	  	powers  p	
+	  where 
+	  	p.power_id in (
+	  			select 
+	  				rp.power_id 
+	  			from
+	  			  role_power rp
+	  			where
+	  			  role_id =#{roleId}
+	  			  )	
+	</select>
+	
+	<!--  
+	/**
+	 * 查询该角色未获得的权限
+	 * @param roleId 角色id
+	 * @return 权限的集合
+	 */
+	List<Permission> getRoleOutPermission(Integer roleId);
+	-->
+	
+	<select id="getRoleOutPermission" resultType="com.mingyuan.entitys.Permission">
+		select 
+			p.power_id as pId,p.power_name pName,p.permission
+	  from 
+	  	powers  p	
+	  where 
+	  	p.power_id not in (
+	  			select 
+	  				rp.power_id 
+	  			from
+	  			  role_power rp
+	  			where
+	  			  role_id =#{roleId}
+	  			  )	
+	</select>
  </mapper>

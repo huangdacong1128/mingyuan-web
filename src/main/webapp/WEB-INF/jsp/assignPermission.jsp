@@ -29,27 +29,27 @@
 				<div class="panel panel-default">
 						<div class="panel-body">
 								<form role="form" class="form-inline">
-								<input type="hidden" value="${userId}" name="userId">
+								<input type="hidden" value="${roleId}" name="roleId">
 										<div class="form-group">
-												<label for="exampleInputPassword1">未分配角色列表</label><br>
+												<label for="exampleInputPassword1">未分配权限</label><br>
 												<select class="form-control" multiple size="10"
-														style="width: 100px; overflow-y: auto;" id="unRoles">													
+														style="width: 100px; overflow-y: auto;" id="outPermission">													
 												</select>
 										</div>
 										<div class="form-group">
 												<ul>
 														<li
-																class="btn btn-default glyphicon glyphicon-chevron-right" id="inRole"></li>
+																class="btn btn-default glyphicon glyphicon-chevron-right" id="in_btn" ></li>
 														<br>
 														<li
 																class="btn btn-default glyphicon glyphicon-chevron-left"
-																style="margin-top: 20px;" id="outRole"></li>
+																style="margin-top: 20px;" id="out_btn"></li>
 												</ul>
 										</div>
 										<div class="form-group" style="margin-left: 40px;">
-												<label for="exampleInputPassword1">已分配角色列表</label><br>
+												<label for="exampleInputPassword1">已分配权限</label><br>
 												<select class="form-control" multiple size="10"
-														style="width: 100px; overflow-y: auto;" id="roles">								
+														style="width: 100px; overflow-y: auto;" id="inPermission">								
 												</select>
 										</div>
 								</form>
@@ -64,84 +64,80 @@
 			selectBuild();
 		});
 		function selectBuild() {
-			var userId=$("form>input[name='userId']").val();
+			var roleId=$("form>input[name='roleId']").val();
 			$.ajax({
-				url : "${APP_PATH}/user/showUserRole",
-				data : "userId=" + userId,
+				url : "${APP_PATH}/role/show_role_p",
+				data : "roleId=" + roleId,
 				dataType : "json",
 				type : "GET",
 				success : function(result) {
-					build_role_option(result);
+					build_permission_option(result);
 				}
 			})			
 		}
-		function build_role_option(result) {
+		function build_permission_option(result) {
 			
-			$("#unRoles").empty();
-			$("#roles").empty();
+			$("#outPermission").empty();
+			$("#inPermission").empty();
 			
-			var  outUseRoles= result.extend.outUseRoles;
-			var  userRoles= result.extend.userRoles;
-			$.each(outUseRoles,function(index, item) {
-					var roleNameOption= $("<option></option>").text(item.roleName)
-																												.val(item.roleId);								
-					$("#unRoles").append(roleNameOption);
+			var  outPermissions= result.extend.outPermission;
+			var  inPermissions= result.extend.inPermission;
+			$.each(outPermissions,function(index, item) {
+					var outPerOption= $("<option></option>").text(item.pname)
+																												.val(item.pId);								
+					$("#outPermission").append(outPerOption);
 			});
-			$.each(userRoles,function(index, item) {
-					var roleOption= $("<option></option>").text(item.roleName)
-																												.val(item.roleId);								
-					$("#roles").append(roleOption);						
+			$.each(inPermissions,function(index, item) {
+					var inPerOption= $("<option></option>").text(item.pname)
+																												.val(item.pId);								
+					$("#inPermission").append(inPerOption);						
 			});
 		}		
 		//添加角色
-		$("#inRole").click(function(){		
-			var opts = $("#unRoles :selected");
-			var userId=$("form>input[name='userId']").val();
-			var roleIds=[];
+		$("#in_btn").click(function(){		
+			var opts = $("#outPermission :selected");
+			var roleId=$("form>input[name='roleId']").val();
+			var pIds=[];
 			$.each(opts,function(index, item) {
-					roleIds.push($(item).val());				
+				pIds.push($(item).val());				
 			});
     	if (opts.length == 0 ) {
-    			alert("请选择需要分配的角色数据");	
+    			alert("请选择需要分配的权限");	
     			return;
     		}    	
     	$.ajax({
-				url : "${APP_PATH}/user/addUserRole",
+				url : "${APP_PATH}/role/add_role_p",
 				dataType : "json",
-				data : "roleIds=" + roleIds +"&userId=" + userId,
-				type : "POST",
-				success : function(result) {
-					if(result.code==100){
-						$("#roles").append(opts); 
-					}else{
-						alert("对不起你没有权限");
-					}					
-				}
-    	    });
-    	  	
-		});	
-		//删除角色
-		$("#outRole").click(function(){		
-			var opts = $("#roles :selected");
-			var userId=$("form>input[name='userId']").val();
-			var roleIds=[];
-			$.each(opts,function(index, item) {
-				roleIds.push($(item).val());				
-			});
-    	if (opts.length == 0 ) {
-    			alert("请选择需要删除的角色");	
-    			return;
-    		}    	
-    	$.ajax({
-				url : "${APP_PATH}/user/deleteUserRole",
-				dataType : "json",
-				data : "roleIds=" + roleIds +"&userId=" + userId,
+				data : "pIds=" + pIds +"&roleId=" + roleId,
 				type : "POST",
 				success : function(result) {
 					
 				}
     	    });
-    	$("#unRoles").append(opts);   	
+    	$("#inPermission").append(opts);   	
+		});	
+		//删除角色
+		$("#out_btn").click(function(){		
+			var opts = $("#inPermission :selected");
+			var roleId=$("form>input[name='roleId']").val();
+			var pIds=[];
+			$.each(opts,function(index, item) {
+				pIds.push($(item).val());				
+			});
+    	if (opts.length == 0 ) {
+    			alert("请选择需要权限");	
+    			return;
+    		}    	
+    	$.ajax({
+				url : "${APP_PATH}/role/delete_role_p",
+				dataType : "json",
+				data : "pIds=" + pIds +"&roleId=" + roleId,
+				type : "POST",
+				success : function(result) {
+					
+				}
+    	    });
+    	$("#outPermission").append(opts);   	
 		});	
 		</script>
 </body>
